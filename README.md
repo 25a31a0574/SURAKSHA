@@ -24,4 +24,7 @@ View your app in AI Studio: https://ai.studio/apps/9a4d9827-034c-4ff6-940c-02999
 3. Run the app:
    `npm run dev`
 
-Demo video:
+Prototype Deck: C:\Users\sri siri\Downloads\suraksha GDC .pdf
+Live Prototype link: https://ais-pre-ibltkmi6rmhfo6vytkkszf-51981677698.asia-southeast1.run.app/
+Demo video link: https://drive.google.com/file/d/1pwlvyCWeJ54RmPS869eMt9lbRZ5QrMQo/view?usp=sharing
+
