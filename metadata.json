@@ -1,0 +1,10 @@
+{
+  "name": "Suraksha",
+  "description": "An Emergency Coordination App for real-time SOS, crash detection, and intelligent responder routing.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ],
+  "majorCapabilities": []
+}

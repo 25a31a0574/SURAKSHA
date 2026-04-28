@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Space+Grotesk:wght@700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+
+  /* Theme variables */
+  --color-ui-bg: var(--ui-bg);
+  --color-ui-surface: var(--ui-surface);
+  --color-ui-surface-hover: var(--ui-surface-hover);
+  --color-ui-text: var(--ui-text);
+  --color-ui-text-muted: var(--ui-text-muted);
+  --color-ui-border: var(--ui-border);
+  --color-ui-primary: var(--ui-primary);
+}
+
+:root {
+  --ui-bg: #09090b; /* zinc-950 */
+  --ui-surface: #18181b; /* zinc-900 */
+  --ui-surface-hover: #27272a; /* zinc-800 */
+  --ui-text: #ffffff;
+  --ui-text-muted: #71717a; /* zinc-500 */
+  --ui-border: #27272a; /* zinc-800 */
+  --ui-primary: #4f46e5; /* indigo-600 */
+}
+
+.theme-light {
+  --ui-bg: #fafafa; /* zinc-50 */
+  --ui-surface: #f4f4f5; /* zinc-100 */
+  --ui-surface-hover: #e4e4e7; /* zinc-200 */
+  --ui-text: #09090b; /* zinc-950 */
+  --ui-text-muted: #52525b; /* zinc-600 */
+  --ui-border: #e4e4e7; /* zinc-200 */
+  --ui-primary: #3730a3; /* indigo-800 */
+}
+
+.theme-high-contrast {
+  --ui-bg: #000000;
+  --ui-surface: #000000;
+  --ui-surface-hover: #1a1a1a;
+  --ui-text: #ffff00; /* Yellow */
+  --ui-text-muted: #ffff00;
+  --ui-border: #ffffff;
+  --ui-primary: #ffff00;
+}
+

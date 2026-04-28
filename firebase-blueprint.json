@@ -1,0 +1,105 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User profile containing role, medical info, and registration details",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "name": { "type": "string" },
+        "gender": { "type": "string" },
+        "age": { "type": "integer" },
+        "phoneNumber": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "responder"] },
+        "userType": { "type": "string", "enum": ["citizen", "emergency_department"] },
+        "department": { "type": "string" },
+        "occupation": { "type": "string" },
+        "proofOfIdentity": { "type": "string" },
+        "serviceId": { "type": "string" },
+        "photo": { "type": "string" },
+        "medicalInfo": {
+          "type": "object",
+          "properties": {
+            "bloodGroup": { "type": "string" },
+            "allergies": { "type": "string" },
+            "conditions": { "type": "string" },
+            "complications": { "type": "string" }
+          }
+        },
+        "location": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        },
+        "isAvailable": { "type": "boolean" },
+        "lastActive": { "type": "integer" }
+      },
+      "required": ["uid", "role"]
+    },
+    "EmergencyCase": {
+      "title": "Emergency Case",
+      "description": "An active or historical emergency event with rich media",
+      "type": "object",
+      "properties": {
+        "victimId": { "type": "string" },
+        "victimName": { "type": "string" },
+        "victimDetails": { "type": "object" },
+        "location": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        },
+        "status": { "type": "string", "enum": ["active", "unassigned", "assigned", "in_progress", "solved", "escalated"] },
+        "type": { "type": "string", "enum": ["general", "medical", "fire", "security", "manual", "crash", "bystander"] },
+        "description": { "type": "string" },
+        "audioDescription": { "type": "string" },
+        "incidentImage": { "type": "string" },
+        "severity": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+        "createdAt": { "type": "integer" },
+        "updatedAt": { "type": "integer" },
+        "responderId": { "type": "string" },
+        "solvedBy": { "type": "string" },
+        "skipList": { "type": "array", "items": { "type": "string" } },
+        "aiAdvise": { "type": "string" },
+        "medicalSnapshot": { "type": "object" }
+      },
+      "required": ["location", "status", "type", "createdAt"]
+    },
+    "LeaderboardEntry": {
+      "title": "Leaderboard",
+      "description": "Responder performance tracking",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "casesSolved": { "type": "integer" },
+        "lastLocation": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and medical records"
+    },
+    "/emergency_cases/{caseId}": {
+      "schema": "EmergencyCase",
+      "description": "Active and resolved emergency incidents"
+    },
+    "/leaderboard/{userId}": {
+      "schema": "LeaderboardEntry",
+      "description": "Responder stats for the leaderboard"
+    }
+  }
+}

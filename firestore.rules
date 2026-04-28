@@ -1,0 +1,94 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isAuth() && request.auth.token.email_verified == true;
+    }
+
+    function isSignedIn() {
+      return isVerified(); // For backward compatibility in this file
+    }
+    
+    function isOwner(userId) {
+      return isAuth() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- User Profile Rules ---
+    function isValidUser(data) {
+      return data.uid == request.auth.uid &&
+             data.email is string && data.email.size() <= 256 &&
+             data.name is string && data.name.size() <= 128 &&
+             data.role in ['user', 'responder'] &&
+             (!('medicalInfo' in data) || (
+               data.medicalInfo.bloodGroup is string && data.medicalInfo.bloodGroup.size() <= 10
+             )) &&
+             (!('location' in data) || (
+               data.location.lat is number && data.location.lng is number
+             )) &&
+             (!('isAvailable' in data) || (
+               data.isAvailable is bool
+             ));
+    }
+
+    match /users/{userId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn() && resource.data.role == 'responder';
+      allow create: if isOwner(userId) && isValidUser(incoming());
+      allow update: if isOwner(userId) && (
+        // Allow updating any profile fields if owner, including lastActive and location
+        incoming().uid == userId && incoming().role == existing().role
+      );
+    }
+
+    // --- Emergency Case Rules ---
+    function isValidEmergencyCase(data) {
+      return (data.victimId == request.auth.uid || data.type == 'bystander' || data.victimName != null) &&
+             data.status in ['active', 'unassigned', 'assigned', 'in_progress', 'solved', 'escalated'] &&
+             data.type in ['general', 'medical', 'fire', 'security', 'manual', 'crash', 'bystander'] &&
+             data.createdAt is int &&
+             data.location.lat is number && data.location.lng is number;
+    }
+
+    match /emergency_cases/{caseId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidEmergencyCase(incoming());
+      allow update: if isSignedIn() && (
+        // Action: Accept/Update Case
+        (incoming().diff(existing()).affectedKeys().hasAny(['status', 'responderId', 'updatedAt', 'solvedBy', 'skipList', 'aiAdvise', 'severity']))
+      );
+    }
+
+    // --- Leaderboard Rules ---
+    match /leaderboard/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && (
+        // Only allow self-write if it's the current user and they are updating stats
+        isOwner(userId) &&
+        incoming().casesSolved is int &&
+        (resource == null || incoming().casesSolved >= existing().casesSolved)
+      );
+    }
+  }
+}
