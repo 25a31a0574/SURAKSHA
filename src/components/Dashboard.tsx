@@ -707,16 +707,33 @@ export default function Dashboard({ userRole, onLogout }: { userRole: Role, onLo
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-8 flex flex-col gap-8">
-                  {/* Map Toggle Area */}
-                  <div className="h-[300px] w-full bg-zinc-950 rounded-3xl border border-zinc-800 overflow-hidden relative group">
-                    <MapComponent 
-                      victimLocation={selectedCase.location} 
-                      responderLocation={lastLocation} 
-                      otherResponders={otherResponders}
-                      showPath={true}
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                       <span className="bg-indigo-600 text-white px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl">Enter Tactical Map</span>
+                  {/* Critical Intelligence Feed */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="md:col-span-2 h-[300px] w-full bg-zinc-950 rounded-3xl border border-zinc-800 overflow-hidden relative group">
+                      <MapComponent 
+                        victimLocation={selectedCase.location} 
+                        responderLocation={lastLocation} 
+                        otherResponders={otherResponders}
+                        showPath={true}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-4">
+                      {selectedCase.incidentImage && (
+                        <div className="flex-1 rounded-3xl overflow-hidden border border-zinc-800 bg-zinc-900 relative">
+                          <img src={selectedCase.incidentImage} className="w-full h-full object-cover" alt="Incident" />
+                          <div className="absolute top-2 left-2 bg-black/60 px-2 py-1 rounded text-[8px] font-bold text-white uppercase tracking-widest flex items-center gap-1">
+                            <Camera size={10} /> Camera
+                          </div>
+                        </div>
+                      )}
+                      {selectedCase.audioDescription && (
+                        <div className="flex-none p-4 rounded-3xl border border-zinc-800 bg-zinc-900">
+                          <h5 className="text-[9px] font-black text-zinc-400 uppercase mb-2 flex items-center gap-1">
+                            <Mic size={10} /> Voice Log
+                          </h5>
+                          <audio controls src={selectedCase.audioDescription} className="w-full" />
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -735,17 +752,6 @@ export default function Dashboard({ userRole, onLogout }: { userRole: Role, onLo
                             "{selectedCase.description || "No manual description provided. Voice logs active."}"
                           </p>
                         </div>
-                        {selectedCase.incidentImage && (
-                          <div className="mt-4 rounded-xl overflow-hidden border border-zinc-800 aspect-video bg-zinc-900">
-                            <img src={selectedCase.incidentImage} className="w-full h-full object-cover" alt="Incident" />
-                          </div>
-                        )}
-                        {selectedCase.audioDescription && (
-                          <div className="mt-4 p-4 rounded-xl border border-zinc-800 bg-zinc-900">
-                            <h5 className="text-[9px] font-black text-zinc-600 uppercase mb-2">Voice Evidence</h5>
-                            <audio controls src={selectedCase.audioDescription} className="w-full" />
-                          </div>
-                        )}
                       </div>
                     </div>
 
@@ -773,24 +779,6 @@ export default function Dashboard({ userRole, onLogout }: { userRole: Role, onLo
                                  {Math.round((getTrafficMultiplier(selectedCase.location) - 1) * 100)}% Delay
                                </p>
                             </div>
-                          </div>
-
-                          <div className="space-y-2">
-                             <div className="flex justify-between items-center text-[10px]">
-                                <span className="text-zinc-500 uppercase">Estimated Interception</span>
-                                <span className="text-white font-black italic">
-                                  {lastLocation 
-                                    ? Math.round(getDistance(lastLocation, selectedCase.location) * 2 * getTrafficMultiplier(selectedCase.location)) 
-                                    : '--'} min
-                                </span>
-                             </div>
-                             <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
-                                <motion.div 
-                                  initial={{ width: 0 }}
-                                  animate={{ width: '40%' }}
-                                  className="h-full bg-indigo-500" 
-                                />
-                             </div>
                           </div>
                        </div>
                     </div>

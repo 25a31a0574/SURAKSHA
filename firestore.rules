@@ -38,18 +38,14 @@ service cloud.firestore {
     // --- User Profile Rules ---
     function isValidUser(data) {
       return data.uid == request.auth.uid &&
-             data.email is string && data.email.size() <= 256 &&
-             data.name is string && data.name.size() <= 128 &&
+             data.email is string &&
+             data.name is string &&
              data.role in ['user', 'responder'] &&
-             (!('medicalInfo' in data) || (
-               data.medicalInfo.bloodGroup is string && data.medicalInfo.bloodGroup.size() <= 10
-             )) &&
-             (!('location' in data) || (
-               data.location.lat is number && data.location.lng is number
-             )) &&
-             (!('isAvailable' in data) || (
-               data.isAvailable is bool
-             ));
+             (!('medicalInfo' in data) || data.medicalInfo is map) &&
+             (!('location' in data) || data.location is map) &&
+             (!('isAvailable' in data) || data.isAvailable is bool) &&
+             (!('phoneNumber' in data) || data.phoneNumber is string) &&
+             (!('userType' in data) || data.userType in ['citizen', 'emergency_department']);
     }
 
     match /users/{userId} {
